@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Home Listings in Abidjan</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+    #container {
+      display: flex;
+      height: 100vh;
+    }
+    #map {
+      flex: 1;
+      z-index: 1;
+    }
+    #info {
+      flex: 0;
+      overflow-y: auto;
+      background: rgba(255, 255, 255, 0.9);
+      width: 0;
+      transition: all 0.3s ease;
+      z-index: 2;
+    }
+    #info.open {
+      flex-basis: 50%;
+      width: 50%;
+    }
+    .info-header {
+      font-size: 24px;
+      padding: 16px;
+      border-bottom: 1px solid #ccc;
+    }
+    .info-content {
+      padding: 16px;
+    }
+  </style>
+</head>
+<body>
+
+<div id="container">
+  <div id="map"></div>
+  <div id="info">
+    <div class="info-header">Home Details</div>
+    <div class="info-content" id="homeInfo"></div>
+  </div>
+</div>
+
+<script>
+  // Initialize the map
+  var map = L.map('map').setView([5.3599517, -4.0082563], 13);
+
+  // Add a tile layer
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(map);
+
+  // Sample data: [latitude, longitude, name, surface area, other information]
+  var listings = [
+    [5.377856, -3.991341, "Home 1", "200 sqm", "3 bedrooms, 2 baths"],
+    [5.335451, -4.027695, "Home 2", "150 sqm", "2 bedrooms, 2 baths"],
+    [5.347494, -4.017733, "Home 3", "250 sqm", "4 bedrooms, 3 baths"]
+  ];
+
+  // Loop through the sample data to create markers and popups
+  listings.forEach(function(listing) {
+    var marker = L.marker([listing[0], listing[1]]).addTo(map);
+
+    marker.on('click', function() {
+      document.getElementById("info").classList.add("open");
+      document.getElementById("homeInfo").innerHTML = `
+          <strong>Name:</strong> ${listing[2]}<br/>
+          <strong>Surface Area:</strong> ${listing[3]}<br/>
+          <strong>Other Information:</strong> ${listing[4]}<br/>
+      `;
+    });
+  });
+</script>
+
+</body>
+</html>
